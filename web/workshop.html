@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North Pole HQ | Workshop</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Nunito:wght@400;700;800&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="workshop-body">
+    <div class="sky-container">
+        <div class="aurora"></div>
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+    </div>
+
+    <header class="app-header">
+        <a href="menu.html" class="back-btn">← DASHBOARD</a>
+        <h1>🛠️ Workshop Operations</h1>
+    </header>
+
+    <main class="dashboard">
+        <!-- Production Speed -->
+        <section class="magic-panel full-width">
+            <div class="panel-header">
+                <h2>🎁 Toy Production Rate</h2>
+                <div class="live-indicator">RUNNING @ <span id="production-rate">100%</span></div>
+            </div>
+            <div class="production-meter">
+                <div class="bar-container">
+                    <div class="bar-fill" id="progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <span class="label">Total Toys Built</span>
+                        <span class="value" id="toy-count">Loading...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">Ready for Christmas</span>
+                        <span class="value" id="ready-percent">0%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Visual Assembly Line (Toddler Friendly) -->
+        <section class="magic-panel full-width" style="margin-top: 20px;">
+            <div class="panel-header">
+                <h2>Toy Assembly Belt</h2>
+                <div class="live-indicator">ACTIVE</div>
+            </div>
+
+            <!-- Present Production Tracker -->
+            <div class="canvas-container tracker-wrapper">
+                <div id="tracker-content" class="tracker-container">
+                    <!-- JS Fills this -->
+                </div>
+            </div>
+
+            <script src="production.js"></script>
+        </section>
+
+        <!-- Live Status Feed -->
+        <section class="magic-panel full-width" style="margin-top: 20px;">
+            <div class="panel-header">
+                <h2>Live Floor Events</h2>
+                <div class="live-indicator">UPDATES</div>
+            </div>
+            <div class="live-feed-container"
+                style="height: 150px; overflow-y: hidden; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; font-family: 'Share Tech Mono', monospace; font-size: 0.9rem;">
+                <div class="live-feed-content">
+                    <!-- JS fills this -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Elf Shifts & Stats -->
+        <section class="stats-grid">
+            <div class="magic-card">
+                <div class="icon">🧝</div>
+                <h3>Active Shift</h3>
+                <div class="stat-big" id="active-shift">LOADING</div>
+                <div class="stat-detail" id="active-sector">...</div>
+            </div>
+
+            <div class="magic-card">
+                <div class="icon">🎁</div>
+                <h3>Wrapping Paper</h3>
+                <div class="stat-big" id="wrapping-status">...</div>
+                <div class="stat-detail" id="wrapping-detail">Checking...</div>
+            </div>
+
+            <div class="magic-card">
+                <div class="icon">☕</div>
+                <h3>Cocoa Reserves</h3>
+                <div class="stat-big" id="cocoa-level">...</div>
+                <div class="stat-detail">Optimal Temp</div>
+            </div>
+
+            <div class="magic-card">
+                <div class="icon">📜</div>
+                <h3>Naughty/Nice</h3>
+                <div class="stat-big" id="nice-ratio">--:--</div>
+                <div class="stat-detail" id="nice-trend">Loading...</div>
+            </div>
+        </section>
+
+        <!-- Christmas Countdown Stats -->
+        <section class="stats-grid" style="margin-top: 20px;">
+            <div class="magic-card countdown-card">
+                <div class="icon">🎄</div>
+                <h3>Until Christmas</h3>
+                <div class="stat-big" id="days-countdown" style="color: #4ade80;">⏳</div>
+                <div class="stat-detail">The Big Day!</div>
+            </div>
+
+            <div class="magic-card">
+                <div class="icon">🧝‍♂️</div>
+                <h3>Elves Working</h3>
+                <div class="stat-big" id="elves-working">...</div>
+                <div class="stat-detail">All Hands on Deck!</div>
+            </div>
+
+            <div class="magic-card">
+                <div class="icon">🦌</div>
+                <h3>Reindeer Ready</h3>
+                <div class="stat-big" id="reindeer-ready">0/9</div>
+                <div class="stat-detail">Training Complete</div>
+            </div>
+
+            <div class="magic-card">
+                <div class="icon">🛷</div>
+                <h3>Sleigh Loaded</h3>
+                <div class="stat-big" id="sleigh-capacity">0%</div>
+                <div class="stat-detail">Final Week Only</div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // === REAL-TIME WORKSHOP STATS ===
+        // Fetches from server and updates UI with Christmas countdown progress
+
+        async function updateWorkshopStats() {
+            try {
+                const res = await fetch('/api/workshop?t=' + Date.now());
+                if (!res.ok) throw new Error('Server offline');
+
+                const data = await res.json();
+
+                // Update main counters
+                document.getElementById('toy-count').textContent =
+                    new Intl.NumberFormat().format(data.toysMade);
+                document.getElementById('ready-percent').textContent =
+                    data.progress + '%';
+                document.getElementById('production-rate').textContent =
+                    data.productionRate;
+                document.getElementById('progress-bar').style.width =
+                    Math.min(data.progress, 100) + '%';
+
+                // Update stat cards
+                document.getElementById('active-shift').textContent = data.activeShift;
+                document.getElementById('active-sector').textContent = data.activeSector;
+                document.getElementById('wrapping-status').textContent = data.wrappingPaperStatus;
+                document.getElementById('wrapping-detail').textContent =
+                    data.wrappingPaperStatus === 'LOW' ? 'Refill Required' : 'Stock Good';
+                document.getElementById('wrapping-detail').style.color =
+                    data.wrappingPaperStatus === 'LOW' ? '#ef4444' : '#4ade80';
+
+                document.getElementById('cocoa-level').textContent =
+                    new Intl.NumberFormat().format(data.cocoaReserves) + 'L';
+                document.getElementById('nice-ratio').textContent =
+                    data.niceListRatio + ':' + (100 - data.niceListRatio);
+                document.getElementById('nice-trend').textContent =
+                    data.niceListRatio > 80 ? 'Trending Nice! 🎉' : 'Keep Being Good!';
+
+                // Update countdown
+                document.getElementById('days-countdown').textContent =
+                    data.daysUntilChristmas + ' days';
+                document.getElementById('elves-working').textContent =
+                    new Intl.NumberFormat().format(data.elvesWorking);
+                document.getElementById('reindeer-ready').textContent =
+                    data.reindeerReady + '/9';
+                document.getElementById('sleigh-capacity').textContent =
+                    data.sleighCapacity + '%';
+
+            } catch (e) {
+                console.error('Workshop stats error:', e);
+            }
+        }
+
+        // Update every 2 seconds
+        setInterval(updateWorkshopStats, 2000);
+        updateWorkshopStats();
+
+        // Fun Live Status Updates
+        const messages = [
+            "🧝 Elf #492 completed a perfect toy train!",
+            "✨ Glitter supplies restocked in Bay 4",
+            "🚂 Model train paint drying: 98% complete",
+            "🦌 Rudolph's nose brightness: OPTIMAL",
+            "🌟 Magic Dust levels stable",
+            "🍪 Cookie taste test passed!",
+            "📋 Nice List updated: 3 more kids added!",
+            "🤖 Toy Robot assembly: FLAWLESS",
+            "🎀 Record bow-tying speed achieved!",
+            "📦 Sleigh loading: North America section",
+            "🎁 Gift wrapping station 7: OVERPERFORMING",
+            "☕ Hot cocoa break: 5 mins remaining",
+            "❄️ Weather check: Perfect flying conditions!",
+            "🏠 Dollhouse quality check: A+",
+            "🎮 Game console inventory: LOADED",
+            "🧸 Teddy bear fluffiness: MAXIMUM",
+            "🎺 Musical instruments tuned perfectly",
+            "📚 Storybook printing: 10,000 copies done",
+            "🛷 Sleigh runners polished to perfection",
+            "🎄 Christmas spirit levels: OFF THE CHARTS!"
+        ];
+
+        const feedContainer = document.querySelector('.live-feed-content');
+
+        function addMessage() {
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            const div = document.createElement('div');
+            const time = new Date().toLocaleTimeString();
+            div.className = 'feed-item';
+            div.innerHTML = `<span class="feed-time">[${time}]</span> ${msg}`;
+            div.style.color = '#4ade80';
+            div.style.marginBottom = '5px';
+
+            feedContainer.prepend(div);
+
+            // Keep list clean
+            if (feedContainer.children.length > 15) {
+                feedContainer.removeChild(feedContainer.lastChild);
+            }
+        }
+
+        setInterval(addMessage, 4000);
+        addMessage(); // Init
+    </script>
+</body>
+
+</html>

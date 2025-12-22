@@ -1,0 +1,8 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sparse larger stars for twinkling -->
+  <circle cx="50" cy="50" r="2" fill="white" fill-opacity="0.9"/>
+  <circle cx="150" cy="200" r="2.5" fill="white" fill-opacity="0.8"/>
+  <circle cx="250" cy="100" r="2" fill="white" fill-opacity="0.9"/>
+  <circle cx="100" cy="250" r="2.2" fill="white" fill-opacity="0.8"/>
+  <circle cx="200" cy="30" r="2" fill="white" fill-opacity="0.9"/>
+</svg>

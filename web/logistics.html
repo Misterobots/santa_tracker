@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics & Tracking | North Pole HQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Nunito:wght@400;700;800&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=9">
+</head>
+
+<body class="workshop-body"> <!-- Use dark workshop body style -->
+    <div class="sky-container" aria-hidden="true" style="opacity: 0.3;">
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+    </div>
+
+    <header class="app-header">
+        <a href="menu.html" class="back-btn">← DASHBOARD</a>
+        <div class="header-content">
+            <h1>📍 Global Logistics</h1>
+            <p class="subtitle">Live Sleigh Telemetry & Route Data</p>
+        </div>
+    </header>
+
+    <main class="dashboard" style="padding-top: 20px;">
+
+        <!-- Main Stats Grid -->
+        <section class="stats-grid">
+            <!-- Location -->
+            <div class="magic-card location-card">
+                <div class="icon">📍</div>
+                <h3>Current Coordinates</h3>
+                <div id="location" class="stat-big">Scanning...</div>
+                <div id="region" class="stat-detail">Satellite Tracking Active</div>
+            </div>
+
+            <!-- Next Stop -->
+            <div class="magic-card next-card">
+                <div class="icon">🦌</div>
+                <h3>Next Destination</h3>
+                <div id="next-stop" class="stat-big">--</div>
+                <div id="arrival-time" class="stat-detail">ETA: --:--</div>
+            </div>
+
+            <!-- Presents -->
+            <div class="magic-card presents-card">
+                <div class="icon">🎁</div>
+                <h3>Gifts Delivered</h3>
+                <div id="presents" class="stat-big count-up">0</div>
+                <div class="stat-detail">Spreading Joy</div>
+            </div>
+
+            <!-- Distance -->
+            <div class="magic-card distance-card">
+                <div class="icon">🌍</div>
+                <h3>Distance Flown</h3>
+                <div id="distance" class="stat-big">0 km</div>
+                <div class="stat-detail">Supersonic</div>
+            </div>
+
+            <!-- New Fun Stats -->
+            <div class="magic-card fun-card cookies">
+                <div class="icon">🍪</div>
+                <h3>Cookies Consumed</h3>
+                <div id="cookies" class="stat-big count-up">0</div>
+                <div class="stat-detail">Delicious Energy</div>
+            </div>
+
+            <div class="magic-card fun-card milk">
+                <div class="icon">🥛</div>
+                <h3>Milk Drank</h3>
+                <div id="milk" class="stat-big count-up">0</div>
+                <div class="stat-detail">Liters of Calcium</div>
+            </div>
+
+            <div class="magic-card fun-card carrots">
+                <div class="icon">🥕</div>
+                <h3>Carrots Crunch</h3>
+                <div id="carrots" class="stat-big count-up">0</div>
+                <div class="stat-detail">Reindeer Power</div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 20px; color: var(--text-muted);">
+        <p>Logistics System Online • <span id="user-timezone">Local Time</span></p>
+    </footer>
+
+    <script src="logistics.js"></script>
+</body>
+
+</html>

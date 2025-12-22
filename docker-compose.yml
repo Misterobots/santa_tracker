@@ -1,0 +1,59 @@
+services:
+  santa-tracker:
+    build: .
+    container_name: santa-tracker
+    image: santa-tracker:latest
+    restart: unless-stopped
+    hostname: santa-tracker
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    networks:
+      - saltbox
+
+    # Traefik Labels (Adapted from Saltbox Template)
+    labels:
+      - "com.github.saltbox.saltbox_managed=true"
+      - "traefik.enable=true"
+
+      # HTTP Router
+      - "traefik.http.routers.santa-tracker-http.entrypoints=web"
+      - "traefik.http.routers.santa-tracker-http.middlewares=globalHeaders@file,redirect-to-https@docker,robotHeaders@file,cloudflarewarp@docker"
+      - "traefik.http.routers.santa-tracker-http.rule=Host(`santahq.shivelymedia.com`)"
+      - "traefik.http.routers.santa-tracker-http.service=santa-tracker"
+
+      # HTTPS Router
+      - "traefik.http.routers.santa-tracker.entrypoints=websecure"
+      - "traefik.http.routers.santa-tracker.middlewares=globalHeaders@file,secureHeaders@file,robotHeaders@file,cloudflarewarp@docker"
+      - "traefik.http.routers.santa-tracker.rule=Host(`santahq.shivelymedia.com`)"
+      - "traefik.http.routers.santa-tracker.service=santa-tracker"
+      - "traefik.http.routers.santa-tracker.tls.certresolver=cfdns"
+      - "traefik.http.routers.santa-tracker.tls.options=securetls@file"
+
+      # Service Port
+      - "traefik.http.services.santa-tracker.loadbalancer.server.port=80"
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+
+  assets-converter:
+    image: jrottenberg/ffmpeg:4.1-ubuntu
+    container_name: assets-converter
+    volumes:
+      - ./web/media:/tmp/work
+    working_dir: /tmp/work
+    entrypoint: [ "/bin/bash", "-c" ]
+    command:
+      - |
+        for f in cctv_stables cctv_workshop cctv_hangar cctv_mailroom; do
+          if [ -f "$$f.png" ]; then
+            echo "Converting $$f.png to mp4 (Forcing B&W)..."
+            ffmpeg -y -loop 1 -i "$$f.png" -vf "hue=s=0" -c:v libx264 -t 10 -pix_fmt yuv420p "$$f.mp4"
+          fi
+        done
+    network_mode: none
+
+networks:
+  saltbox:
+    external: true

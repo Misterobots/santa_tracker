@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North Pole Camera System | Santa's Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Nunito:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=9">
+    <style>
+        /* Clean Video Player Styles */
+        .cctv-body {
+            background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #86198f 100%);
+            color: #fff;
+            font-family: 'Nunito', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .monitor-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .cctv-monitor-frame {
+            width: 90vw;
+            max-width: 1200px;
+            aspect-ratio: 16/9;
+            background: #000;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(124, 58, 237, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000;
+        }
+
+        #cctv-player,
+        #youtube-player,
+        #cctv-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Fill the frame */
+        }
+
+        /* Brighten the YouTube stream */
+        #youtube-player {
+            filter: brightness(1.5) contrast(1.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cctv-monitor-frame {
+                width: 100%;
+                border-width: 5px;
+            }
+        }
+
+        .controls-overlay {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+            z-index: 50;
+        }
+
+        .cctv-btn {
+            background: rgba(124, 58, 237, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 12px 24px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            backdrop-filter: blur(4px);
+            border-radius: 8px;
+        }
+
+        .cctv-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #4c1d95;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .cam-label {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 6px;
+            z-index: 50;
+        }
+
+        .rec-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #f00;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            z-index: 50;
+            text-shadow: 0 0 5px #f00;
+        }
+
+        .rec-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #f00;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+            margin-right: 5px;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .cctv-header {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        .back-link {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            background: rgba(124, 58, 237, 0.6);
+        }
+
+        /* LIVE Badge */
+        .live-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(230, 57, 70, 0.9);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(230, 57, 70, 0.5);
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+            animation: pulse-live 1s infinite;
+        }
+
+        @keyframes pulse-live {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+    </style>
+</head>
+
+<body class="cctv-body">
+
+    <div class="cctv-header">
+        <a href="menu.html" class="back-link">← RETURN</a>
+    </div>
+
+    <div class="monitor-wrapper">
+        <div class="cctv-monitor-frame">
+            <div class="video-container">
+                <video id="cctv-player" autoplay muted playsinline loop>
+                    <!-- Source managed by JS -->
+                </video>
+                <div id="youtube-player" style="display:none; width: 100%; height: 100%;"></div>
+                <img id="cctv-image" src="" alt="CCTV Feed"
+                    style="display: none; width: 100%; height: 100%; object-fit: contain;">
+
+                <!-- Glitch Overlay -->
+                <!-- Wrapper to block mouse events (prevents YouTube title/overlay on hover) -->
+                <div class="click-shield"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 200;"></div>
+
+                <!-- Overlays removed per user request -->
+                <!-- div class="static-overlay"></div -->
+                <!-- div class="cam-label">CAM 01: PERIMETER</div -->
+                <!-- div class="rec-indicator"><span class="rec-dot"></span>REC</div -->
+
+            </div>
+        </div>
+
+        <div class="controls-overlay">
+            <button id="btn-prev" class="cctv-btn">◀ PREV CAM</button>
+            <button id="btn-next" class="cctv-btn">NEXT CAM ▶</button>
+        </div>
+    </div>
+
+    <script src="cctv.js?v=11"></script>
+</body>
+
+</html>

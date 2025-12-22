@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Santa's Workshop ✨</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Nunito:wght@400;700;800&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=14">
+</head>
+
+<body class="dashboard-body">
+    <div class="sky-container">
+        <div class="aurora"></div>
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+    </div>
+
+    <!-- Snowfall Effect -->
+    <div class="snowfall" id="snowfall"></div>
+
+    <header class="dashboard-header">
+        <div class="user-profile">
+            <span class="avatar">🎅</span>
+            <span id="user-display">COMMANDER</span>
+            <!-- Accessibility Badge for Kids -->
+            <div id="status-badge" class="status-badge hidden">
+                <span id="status-icon"></span>
+                <span id="status-text"></span>
+            </div>
+        </div>
+        <h1>✨ Santa's Workshop ✨</h1>
+        <div class="clock" id="clock">--:--:--</div>
+    </header>
+
+    <main class="menu-grid">
+        <a href="cctv.html" class="menu-card cctv-link">
+            <div class="card-icon"><img src="assets/icon_camera.svg" alt="Camera" class="svg-icon"></div>
+            <h2>🎥 North Pole Camera System</h2>
+            <p>Live feeds from around the workshop!</p>
+            <div class="status-indicator online" id="cctv-status">LIVE</div>
+        </a>
+
+
+
+
+        <a href="workshop.html" class="menu-card workshop-link">
+            <div class="card-icon"><img src="assets/icon_factory.svg" alt="Factory" class="svg-icon"></div>
+            <h2>🏭 Toy Factory</h2>
+            <p>See toys being made by elves!</p>
+            <div class="status-indicator busy">BUSY ELVES!</div>
+        </a>
+
+        <a href="logistics.html" class="menu-card logistics-link">
+            <div class="card-icon"><img src="assets/icon_route.svg" alt="Route" class="svg-icon"></div>
+            <h2>🗺️ Santa's Route</h2>
+            <p>Where is Santa going tonight?</p>
+            <div class="status-indicator online">READY</div>
+        </a>
+
+        <a href="index.html" class="menu-card logout-link">
+            <div class="card-icon"><img src="assets/icon_gate.svg" alt="Gate" class="svg-icon"></div>
+            <h2>🚪 Back to Main Gate</h2>
+            <p>See you soon!</p>
+        </a>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simple Clock
+            // Role & Theme Logic
+            const user = localStorage.getItem('hqUser') || 'COMMANDER';
+            const role = localStorage.getItem('hqRole') || 'staff'; // hero, villain, staff
+            const theme = localStorage.getItem('hqTheme') || 'staff'; // specific character key
+
+            document.getElementById('user-display').textContent = user.toUpperCase();
+
+            const cctvLink = document.querySelector('.cctv-link');
+            const userDisplay = document.querySelector('.user-profile');
+            const body = document.body;
+
+            // --- THEME ENGINE ---
+            if (theme) {
+                body.classList.add('theme-' + theme);
+                body.setAttribute('data-theme', theme); // Double down for CSS
+            }
+
+            // Remove JS-based sky hiding, rely on CSS classes now
+            // const sky = document.querySelector('.sky-container');
+            // if (theme && theme !== 'staff' ... ) ...
+
+            if (theme === 'grinch') {
+                body.style.background = '#2a0a0a';
+                body.style.fontFamily = "'Mountains of Christmas', cursive";
+                userDisplay.style.borderColor = '#81f135';
+                userDisplay.style.color = '#81f135';
+                document.querySelector('.dashboard-header h1').textContent = "WHOVILLE MONITOR";
+                document.querySelector('h1').style.color = "#81f135";
+
+                // Add fuzzy border to profile
+                userDisplay.classList.add('grinch-fur-border');
+            }
+            else if (theme === 'clark') {
+                // High Voltage
+                body.style.background = '#0f172a';
+                document.querySelector('.dashboard-header').style.borderBottom = "2px solid #fff";
+                document.querySelector('.dashboard-header').style.boxShadow = "0 0 50px rgba(255,255,255,0.5)";
+                userDisplay.style.borderColor = '#fff';
+                userDisplay.style.color = '#fff';
+                userDisplay.style.textShadow = "0 0 10px #fff";
+
+                // Flash effect
+                setInterval(() => {
+                    document.querySelector('.dashboard-header').style.opacity = Math.random() > 0.9 ? 0.5 : 1;
+                }, 100);
+            }
+            else if (theme === 'cindy') {
+                // Whoville Sweet
+                body.style.background = 'linear-gradient(135deg, #fce7f3 0%, #f472b6 100%)';
+                userDisplay.style.borderColor = '#fff';
+                userDisplay.style.color = '#fff';
+                userDisplay.style.backgroundColor = "rgba(255,255,255,0.2)";
+                document.querySelectorAll('.menu-card').forEach(card => {
+                    card.style.borderRadius = "50px"; // Extra round
+                    card.style.border = "2px solid #fff";
+                    card.style.background = "rgba(255,255,255,0.1)";
+                });
+            }
+            else if (theme === 'jack') {
+                // Skellington
+                body.style.background = "repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 20px, #000 20px, #000 40px)";
+                userDisplay.style.borderColor = '#fff';
+                userDisplay.style.fontFamily = "'Mountains of Christmas', cursive";
+                document.querySelector('.avatar').textContent = '💀';
+            }
+            else if (theme === 'kevin') {
+                // Blueprint
+                body.style.background = "#1e3a8a";
+                body.style.backgroundImage = "linear-gradient(#3b82f6 1px, transparent 1px), linear-gradient(90deg, #3b82f6 1px, transparent 1px)";
+                body.style.backgroundSize = "40px 40px";
+                userDisplay.style.borderColor = '#93c5fd';
+                userDisplay.style.color = '#93c5fd';
+                document.querySelector('.dashboard-header').style.background = "rgba(30, 58, 138, 0.9)";
+            }
+            else if (theme === 'buddy') {
+                // Elf Mode
+                body.style.border = "20px solid #ef4444";
+                userDisplay.style.borderColor = "#fbbf24";
+                userDisplay.style.color = "#fbbf24";
+            }
+            else if (theme === 'ralphie') {
+                // Red Ryder
+                body.style.background = "#7f1d1d"; // Dark Red
+                userDisplay.style.borderColor = "#fbbf24"; // Gold
+                userDisplay.style.fontFamily = "serif";
+                document.querySelector('.avatar').textContent = '👓';
+                document.querySelector('.dashboard-header h1').textContent = "OFFICIAL RED RYDER INTERFACE";
+            }
+            else if (theme === 'frosty') {
+                // Ice
+                body.style.background = "linear-gradient(to bottom, #bae6fd, #e0f2fe)";
+                userDisplay.style.color = "#0ea5e9";
+                userDisplay.style.borderColor = "#0ea5e9";
+                document.querySelector('.avatar').textContent = '🎩';
+            }
+            else if (theme === 'turbo') {
+                // Turbo Man
+                body.style.background = "#ef4444";
+                body.style.backgroundImage = "repeating-linear-gradient(45deg, #dc2626, #dc2626 10px, #ef4444 10px, #ef4444 20px)";
+                userDisplay.style.borderColor = "#fbbf24";
+                userDisplay.style.color = "#fbbf24";
+                userDisplay.style.background = "#000";
+                document.querySelector('.avatar').textContent = '⚡';
+            }
+            else if (theme === 'hans') {
+                // Nakatomi
+                body.style.background = "#1e293b"; // Slate
+                body.style.fontFamily = "Arial, sans-serif";
+                userDisplay.style.borderColor = "#94a3b8";
+                userDisplay.style.color = "#fff";
+                document.querySelector('.dashboard-header h1').textContent = "NAKATOMI PLAZA SECURITY";
+                document.querySelector('.avatar').textContent = '🏢';
+            }
+            else if (theme === 'scrooge') {
+                // Humbug
+                body.style.background = "#000";
+                userDisplay.style.borderColor = "#475569";
+                userDisplay.style.color = "#94a3b8";
+                document.querySelector('.dashboard-header h1').textContent = "MCT & H ACCOUNTS";
+                document.querySelector('.avatar').textContent = '💰';
+            }
+            else if (theme === 'krampus') {
+                // Dark
+                body.style.background = "#000";
+                body.style.backgroundImage = "radial-gradient(circle, #450a0a 0%, #000 100%)";
+                userDisplay.style.borderColor = "#ef4444";
+                userDisplay.style.color = "#ef4444";
+                document.querySelector('.avatar').textContent = '👹';
+            }
+            else if (theme === 'rudolph') {
+                body.style.background = "#451a03";
+                userDisplay.style.color = "#ef4444";
+                userDisplay.style.borderColor = "#ef4444";
+                userDisplay.style.boxShadow = "0 0 20px #ef4444";
+                document.querySelector('.avatar').textContent = '🔴';
+            }
+
+            // --- DYNAMIC BUTTON LOGIC ---
+            const statusCard = document.querySelector('.workshop-link');
+            const h2 = statusCard.querySelector('h2');
+            const p = statusCard.querySelector('p');
+            const icon = statusCard.querySelector('.card-icon');
+            const indicator = statusCard.querySelector('.status-indicator');
+
+            // Default
+            let btnTitle = "Workshop Status";
+            let btnDesc = "Toy Production & Elf Shifts";
+            let btnIcon = "🧸";
+            let btnLink = "workshop.html";
+
+            if (theme === 'grinch') {
+                btnTitle = "Whoville Recon";
+                btnDesc = "Target Trajectory: Mt. Crumpit";
+                btnIcon = "🐕"; // Max
+                // Grinch specific styling handled above in theme block
+                statusCard.onclick = () => alert("Stealing Christmas... 0% Complete.");
+                statusCard.href = "#";
+            } else if (theme === 'cindy') {
+                btnTitle = "Whoville Community";
+                btnDesc = "Holiday Cheermeister Vote";
+                btnIcon = "🎀";
+                statusCard.href = "#"; // Or specific page
+            } else if (theme === 'kevin') {
+                btnTitle = "Battle Plan";
+                btnDesc = "Operation: Sticky Bandits";
+                btnIcon = "🗺️";
+            } else if (theme === 'clark') {
+                btnTitle = "Power Grid";
+                btnDesc = "Auxiliary Nuclear Output";
+                btnIcon = "💡";
+            } else if (theme === 'turbo') {
+                btnTitle = "Turbo Man Tracker";
+                btnDesc = "Market Supply: 0%";
+                btnIcon = "⚡";
+            } else if (theme === 'buddy') {
+                btnTitle = "Santa's Sleigh";
+                btnDesc = "I Know Him! I Know Him!";
+                btnIcon = "🎅";
+            }
+
+            h2.textContent = btnTitle;
+            p.textContent = btnDesc;
+            icon.textContent = btnIcon;
+            if (btnLink !== "workshop.html") statusCard.href = btnLink;
+
+
+            // --- DYNAMIC STATS ---
+            // Replace Clock with Countdown to Christmas? Or Add it?
+            // User asked for "stats leading up to christmas are dynamic"
+            const clockDiv = document.getElementById('clock');
+
+            // --- UNIVERSAL STATS (Server-Side) ---
+
+            async function updateChristmasStats() {
+                // 1. Countdown Logic
+                const now = new Date();
+                const currentYear = now.getFullYear();
+                const xmas = new Date(currentYear, 11, 25);
+                if (now > xmas && now.getMonth() == 11 && now.getDate() > 25) {
+                    xmas.setFullYear(currentYear + 1);
+                }
+
+                const diff = xmas - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const mins = Math.floor((diff / 1000 / 60) % 60);
+                const secs = Math.floor((diff / 1000) % 60);
+
+                // 2. Fetch Global Stats
+                let cookieDisplay = "Loading...";
+                try {
+                    const res = await fetch('/api/stats');
+                    if (res.ok) {
+                        const data = await res.json();
+                        cookieDisplay = data.cookiesEaten.toLocaleString();
+                    }
+                } catch (e) {
+                    console.error("Stats offline", e);
+                }
+
+                // 3. Render
+                // Always show cookies now, as per user request for "stats displayed"
+                const cookieHtml = `
+                     <div style="font-size: 0.5em; color: var(--gold-glow); margin-top: 5px;">
+                        🍪 COOKIES EATEN: ${cookieDisplay}
+                    </div>`;
+
+                clockDiv.innerHTML = `
+                    <div style="font-size: 0.6em; color: #aaa; margin-bottom: 2px;">COUNTDOWN</div>
+                    ${days}d ${hours}h ${mins}m ${secs}s
+                    ${cookieHtml}
+                `;
+            }
+
+            // Update immediately and then every second
+            updateChristmasStats();
+            setInterval(updateChristmasStats, 1000);
+
+            // --- ROLE LIMITATIONS ---
+            if (role === 'villain') {
+                // Disable CCTV for ALL villains (including Grinch)
+                cctvLink.href = "#";
+                cctvLink.style.opacity = "0.5";
+                cctvLink.style.filter = "grayscale(1)";
+                cctvLink.onclick = (e) => { e.preventDefault(); alert("ACCESS DENIED: NAUGHTY LIST DETECTED."); };
+                cctvLink.querySelector('.card-icon').textContent = "🚫";
+                cctvLink.querySelector('h2').textContent = "CCTV BLOCKED";
+                cctvLink.querySelector('p').textContent = "Santa is watching YOU.";
+                cctvLink.querySelector('.status-indicator').textContent = "RESTRICTED";
+                cctvLink.querySelector('.status-indicator').className = "status-indicator offline";
+            } else if (role === 'hero' || role === 'santa') {
+                if (!theme || theme === 'santa' || theme === 'hero' || theme === 'staff') { // Default Hero
+                    userDisplay.style.borderColor = '#fbbf24';
+                    userDisplay.style.color = '#fbbf24';
+                    userDisplay.style.boxShadow = '0 0 15px rgba(251, 191, 36, 0.4)';
+                    document.querySelector('.avatar').textContent = '⭐️';
+                }
+            }
+
+            // --- LOGISTICS ACCESS CONTROL ---
+            // "Only Justin can access Logistics until Christmas Eve"
+            const logisticsLink = document.querySelector('.logistics-link');
+            const now = new Date();
+            const currentMonth = now.getMonth(); // 0-11 (11 is Dec)
+            const currentDate = now.getDate();
+
+            // specific check for Dec 24th or later in December
+            const isChristmasEveOrLater = (currentMonth === 11 && currentDate >= 24);
+            const isJustin = (user.toLowerCase() === 'justin');
+
+            if (!isChristmasEveOrLater && !isJustin) {
+                // LOCK IT DOWN
+                logisticsLink.href = "#";
+                logisticsLink.classList.add('locked-feature'); // We can add opacity via CSS or inline
+                logisticsLink.style.opacity = "0.5";
+                logisticsLink.style.filter = "grayscale(1)";
+                logisticsLink.onclick = (e) => {
+                    e.preventDefault();
+                    alert("🚫 ACCESS DENIED 🚫\n\nLogistics data is classified until December 24th.\nOnly Commander Justin has pre-clearance.");
+                };
+
+                logisticsLink.querySelector('h2').textContent = "Logistics [LOCKED]";
+                logisticsLink.querySelector('.status-indicator').textContent = "CLASSIFIED";
+                logisticsLink.querySelector('.status-indicator').className = "status-indicator offline";
+            } else if (isJustin && !isChristmasEveOrLater) {
+                // Justin gets a special indicator
+                logisticsLink.querySelector('.status-indicator').textContent = "DEV ACCESS";
+                logisticsLink.querySelector('.status-indicator').classList.add('busy');
+                logisticsLink.querySelector('.status-indicator').classList.remove('online');
+            }
+
+
+            // --- STATUS BADGE LOGIC (Accessibility) ---
+            const statusBadge = document.getElementById('status-badge');
+            const statusIcon = document.getElementById('status-icon');
+            const statusText = document.getElementById('status-text');
+
+            if (role === 'villain') {
+                statusBadge.classList.remove('hidden');
+                statusBadge.classList.add('status-naughty');
+                statusIcon.textContent = "⚠️";
+                statusText.textContent = "NAUGHTY LIST";
+
+                // Add red tint to body for clarity
+                document.body.classList.add('mode-naughty');
+            } else {
+                statusBadge.classList.remove('hidden');
+                statusBadge.classList.add('status-nice');
+                statusIcon.textContent = "✅";
+                statusText.textContent = "NICE LIST";
+            }
+
+            // --- SNOWFALL EFFECT ---
+            function createSnowfall() {
+                const snowfall = document.getElementById('snowfall');
+                const flakes = ['❄', '❅', '❆', '✻', '✼', '❋'];
+                const flakeCount = 30;
+
+                for (let i = 0; i < flakeCount; i++) {
+                    const flake = document.createElement('span');
+                    flake.className = 'snowflake';
+                    flake.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+                    flake.style.left = Math.random() * 100 + '%';
+                    flake.style.fontSize = (Math.random() * 1.2 + 0.5) + 'rem';
+                    flake.style.animationDuration = (Math.random() * 8 + 6) + 's';
+                    flake.style.animationDelay = (Math.random() * 5) + 's';
+                    flake.style.opacity = Math.random() * 0.5 + 0.3;
+                    snowfall.appendChild(flake);
+                }
+            }
+            createSnowfall();
+
+            // --- CYCLING BACKGROUND EFFECTS ---
+            const effects = ['effect-aurora', 'effect-northern-lights', 'effect-warm-glow', 'effect-candy-swirl', 'effect-snow-flurry'];
+            const storedEffect = sessionStorage.getItem('xmas-effect-index');
+            let effectIndex = storedEffect ? parseInt(storedEffect) : Math.floor(Math.random() * effects.length);
+
+            // Cycle to next effect for this visit
+            effectIndex = (effectIndex + 1) % effects.length;
+            sessionStorage.setItem('xmas-effect-index', effectIndex);
+
+            // Apply the effect
+            document.body.classList.add(effects[effectIndex]);
+            console.log('🎄 Christmas Effect:', effects[effectIndex]);
+        });
+    </script>
+</body>
+
+</html>
