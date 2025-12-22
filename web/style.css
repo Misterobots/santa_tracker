@@ -597,17 +597,27 @@ footer {
 }
 
 /* --- LOGIN PAGE STYLES --- */
-/* --- LOGIN PAGE STYLES --- */
 .login-body {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
     background: transparent;
     /* Shared gradient */
     margin: 0;
+    padding: 20px 0;
+    box-sizing: border-box;
+}
+
+/* Desktop: center content vertically when there's room */
+@media (min-height: 700px) {
+    .login-body {
+        align-items: center;
+        padding: 0;
+    }
 }
 
 .login-container {
@@ -738,6 +748,43 @@ footer {
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.9rem;
     color: var(--gold-glow);
+}
+
+/* Login Page Mobile Styles */
+@media (max-width: 768px) {
+    .login-header h1 {
+        font-size: 2rem;
+        margin: 5px 0;
+    }
+
+    .login-header .subtitle {
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+    }
+
+    .security-badge {
+        padding: 4px 10px;
+        font-size: 0.7rem;
+        margin-bottom: 10px;
+    }
+
+    .login-panel {
+        padding: 15px !important;
+    }
+
+    #username {
+        min-height: 50px;
+        font-size: 1.3rem;
+    }
+
+    .cyber-button {
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .login-container {
+        padding: 10px;
+    }
 }
 
 /* Warp Overlay */
