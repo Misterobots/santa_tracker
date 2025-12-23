@@ -280,27 +280,57 @@
 
                 // 2. Fetch Global Stats
                 let cookieDisplay = "Loading...";
+                let cookieLabel = "COOKIES";
+                let statusMessage = "";
+                let progressDisplay = "";
+                
                 try {
                     const res = await fetch('/api/stats');
                     if (res.ok) {
                         const data = await res.json();
-                        cookieDisplay = data.cookiesEaten.toLocaleString();
+                        
+                        // Handle different phases
+                        const isSantaFlying = data.isSantaFlying;
+                        const phase = data.phase;
+                        
+                        if (isSantaFlying || phase === 'christmas_day' || phase === 'post_christmas') {
+                            // During/after delivery, show cookies eaten
+                            cookieDisplay = (data.cookiesEaten || 0).toLocaleString();
+                            cookieLabel = "COOKIES EATEN";
+                        } else {
+                            // Before flight, show cookies prepared
+                            cookieDisplay = (data.cookiesPrepared || 0).toLocaleString();
+                            cookieLabel = "COOKIES PREPARED";
+                        }
+                        
+                        // Add status message and progress
+                        if (data.statusMessage) {
+                            statusMessage = data.statusMessage;
+                        }
+                        if (data.progress !== undefined) {
+                            progressDisplay = `${data.progress}%`;
+                        }
                     }
                 } catch (e) {
                     console.error("Stats offline", e);
                 }
 
                 // 3. Render
-                // Always show cookies now, as per user request for "stats displayed"
                 const cookieHtml = `
                      <div style="font-size: 0.5em; color: var(--gold-glow); margin-top: 5px;">
-                        🍪 COOKIES EATEN: ${cookieDisplay}
+                        🍪 ${cookieLabel}: ${cookieDisplay}
                     </div>`;
+                
+                const statusHtml = statusMessage ? `
+                    <div style="font-size: 0.4em; color: #4ade80; margin-top: 3px;">
+                        ${statusMessage}
+                    </div>` : '';
 
                 clockDiv.innerHTML = `
                     <div style="font-size: 0.6em; color: #aaa; margin-bottom: 2px;">COUNTDOWN</div>
                     ${days}d ${hours}h ${mins}m ${secs}s
                     ${cookieHtml}
+                    ${statusHtml}
                 `;
             }
 
